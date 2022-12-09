@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% load i18n wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-blogindexpage{% endblock %}
+
+{% block content %}
+  {% if page %}
+    {% for translation in page.get_translations.live %}
+      {% get_language_info for translation.locale.language_code as lang %}
+      <a href="{% pageurl translation %}" rel="alternate" hreflang="{{ lang.code }}">
+        {{ lang.name_local }}
+      </a>
+    {% endfor %}
+  {% endif %}
+
+  <h1>{{ page.title }}</h1>
+
+
+  {% for post in page.get_children %}
+    <div>
+      {% image post.specific.image max-200x200 %}
+    </div>
+    <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
+    {{ post.specific.category }}
+    {{ post.specific.body }}
+  {% endfor %}
+
+{% endblock %}
