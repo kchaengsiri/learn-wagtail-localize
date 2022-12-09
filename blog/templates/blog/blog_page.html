@@ -5,14 +5,31 @@
 {% block body_class %}template-blogpage{% endblock %}
 
 {% block content %}
-  {% if page %}
+  {% comment %} included active language {% endcomment %}
+  {% for language_code, language_name in LANGUAGES %}
+    {% get_language_info for language_code as lang %}
+
+    {% if not forloop.first %}&nbsp;|&nbsp;{% endif %}
+
+    {% language language_code %}
+      <a href="{% pageurl page.localized %}" rel="alternate" hreflang="{{ language_code }}">
+        {{ lang.name_local }}
+      </a>
+    {% endlanguage %}
+  {% endfor %}
+
+  <hr>
+
+  {% comment %} not included active language {% endcomment %}
+  {% comment %} {% if page %}
     {% for translation in page.get_translations.live %}
       {% get_language_info for translation.locale.language_code as lang %}
+      {% if not forloop.first %}&nbsp;|&nbsp;{% endif %}
       <a href="{% pageurl translation %}" rel="alternate" hreflang="{{ lang.code }}">
         {{ lang.name_local }}
       </a>
     {% endfor %}
-  {% endif %}
+  {% endif %} {% endcomment %}
 
   <h1>{{ page.title }}</h1>
 
